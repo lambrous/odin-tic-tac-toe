@@ -56,6 +56,10 @@ const board = (() => {
     return squares.map((row, i) => row[row.length - (i + 1)]);
   }
 
+  function checkBoardFill() {
+    return squares.every((row) => row.every((item) => item !== null));
+  }
+
   return {
     icons,
     reset,
@@ -65,6 +69,7 @@ const board = (() => {
     getRow,
     getDiagonalLeft,
     getDiagonalRight,
+    checkBoardFill,
   };
 })();
 
@@ -144,8 +149,18 @@ function Player(icon) {
   function mark(row, col) {
     if (board.getSquaresArr()[row][col] !== null || isWinner) return;
     board.getSquaresArr()[row][col] = icon;
-    if (checkDidWin(row, col)) setWin();
-    else game.changePlayer();
+
+    if (checkDidWin(row, col)) {
+      setWin();
+      return;
+    }
+
+    if (board.checkBoardFill()) {
+      game.setText('draw');
+      return;
+    }
+
+    game.changePlayer();
   }
 
   function checkDidWin(row, col) {
@@ -161,7 +176,11 @@ function Player(icon) {
     isWinner = true;
   }
 
-  return { icon, mark, resetWin };
+  function getIsWinner() {
+    return isWinner;
+  }
+
+  return { icon, mark, resetWin, getIsWinner };
 }
 
 game.initialize();
