@@ -79,22 +79,62 @@ const board = (() => {
   };
 })();
 
+const displayController = (() => {
+  const playersContainer = document.querySelector('.players');
+  const player1El = document.querySelector('.player-x');
+  const player2El = document.querySelector('.player-o');
+  const winnerEl = document.querySelector('.winner');
+
+  function updatePlayerTurn(icon) {
+    if (icon === board.icons[0]) {
+      player1El.classList.add('player-turn');
+      player2El.classList.remove('player-turn');
+    }
+    if (icon === board.icons[1]) {
+      player1El.classList.remove('player-turn');
+      player2El.classList.add('player-turn');
+    }
+  }
+
+  function updatePlayerName(icon, name) {
+    const playerEl = document.querySelector(`.player-${icon} > .player-name`);
+    playerEl.textContent = name;
+  }
+
+  function showWinner(text) {
+    playersContainer.classList.add('hidden');
+    winnerEl.classList.remove('hidden');
+    winnerEl.textContent = text;
+  }
+
+  function reset() {
+    playersContainer.classList.remove('hidden');
+    winnerEl.classList.add('hidden');
+    updatePlayerTurn(board.icons[0]);
+  }
+
+  return {
+    updatePlayerTurn,
+    updatePlayerName,
+    showWinner,
+    reset,
+  };
+})();
+
 const game = (() => {
-  const player1 = Player(board.icons[0]);
-  const player2 = Player(board.icons[1]);
+  const player1 = Player(board.icons[0], 'Player 1');
+  const player2 = Player(board.icons[1], 'Player 2');
   let currentPlayer = player1;
   let winningMarks = null;
 
   const resetBtn = document.querySelector('.reset-game');
   resetBtn.addEventListener('click', initialize);
-  const textEl = document.querySelector('.turn');
-  textEl.textContent = currentPlayer.icon;
 
   function changePlayer(player = 0) {
     if (player === 1) currentPlayer = player1;
     else currentPlayer = currentPlayer === player1 ? player2 : player1;
 
-    setText(`turn: ${currentPlayer.icon}`);
+    displayController.updatePlayerTurn(currentPlayer.icon);
   }
 
   function getCurrentPlayer() {
@@ -104,13 +144,12 @@ const game = (() => {
   function initialize() {
     board.initialize();
     player1.resetWin();
+    displayController.updatePlayerName(player1.icon, player1.name);
     player2.resetWin();
+    displayController.updatePlayerName(player2.icon, player2.name);
     changePlayer(1);
     resetWinningMarks();
-  }
-
-  function setText(text) {
-    textEl.textContent = text;
+    displayController.reset();
   }
 
   function checkArrayEqual(arr, item) {
@@ -179,14 +218,13 @@ const game = (() => {
     getCurrentPlayer,
     changePlayer,
     initialize,
-    setText,
     checkHasWinningMarks,
     getWinningMarks,
     setWinningMarksColor,
   };
 })();
 
-function Player(icon) {
+function Player(icon, name) {
   let isWinner = false;
 
   function resetWin() {
@@ -207,7 +245,7 @@ function Player(icon) {
     }
 
     if (board.checkBoardFill()) {
-      game.setText('draw');
+      displayController.showWinner('draw');
       return;
     }
 
@@ -215,7 +253,7 @@ function Player(icon) {
   }
 
   function setWin() {
-    game.setText(`${icon} wins`);
+    displayController.showWinner(`${name} '${icon}' wins`);
     isWinner = true;
   }
 
@@ -223,7 +261,7 @@ function Player(icon) {
     return isWinner;
   }
 
-  return { icon, mark, resetWin, getIsWinner };
+  return { icon, name, mark, resetWin, getIsWinner };
 }
 
 game.initialize();
