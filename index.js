@@ -15,8 +15,8 @@ const board = (() => {
     return squares;
   }
 
-  function getSquareEl(row, col) {
-    return document.querySelector(`[data-mark="${row}-${col}"]`);
+  function getSquareEl(pos) {
+    return document.querySelector(`[data-mark="${pos}"]`);
   }
 
   function initialize() {
@@ -45,12 +45,12 @@ const board = (() => {
     return el;
   }
 
-  function getRow(position) {
-    return squares[position];
+  function getRow(pos) {
+    return squares[pos];
   }
 
-  function getCol(position) {
-    return squares.map((row) => row[position]);
+  function getCol(pos) {
+    return squares.map((row) => row[pos]);
   }
 
   function getDiagonalLeft() {
@@ -83,6 +83,7 @@ const game = (() => {
   const player1 = Player(board.icons[0]);
   const player2 = Player(board.icons[1]);
   let currentPlayer = player1;
+  let winningMarks = null;
 
   const resetBtn = document.querySelector('.reset-game');
   resetBtn.addEventListener('click', initialize);
@@ -105,6 +106,7 @@ const game = (() => {
     player1.resetWin();
     player2.resetWin();
     changePlayer(1);
+    resetWinningMarks();
   }
 
   function setText(text) {
@@ -115,23 +117,62 @@ const game = (() => {
     return arr.every((i) => i === item);
   }
 
-  function checkRowEqual(icon, position) {
-    const row = board.getRow(position);
-    return checkArrayEqual(row, icon);
+  function checkTrioMarks({ arr, icon }, func) {
+    if (checkArrayEqual(arr, icon)) {
+      winningMarks = arr.map(func);
+      return true;
+    } else return false;
   }
 
-  function checkColEqual(icon, position) {
-    const column = board.getCol(position);
-    return checkArrayEqual(column, icon);
-  }
+  const checkRowEqual = function (icon, pos) {
+    const arr = board.getRow(pos);
+    const mapFunc = (_, i) => `${pos}-${i}`;
+    return checkTrioMarks({ arr, icon }, mapFunc);
+  };
 
-  function checkDiagonalEqual(icon) {
-    const diagonalLeft = board.getDiagonalLeft();
-    const diagonalRight = board.getDiagonalRight();
+  const checkColEqual = function (icon, pos) {
+    const arr = board.getCol(pos);
+    const mapFunc = (_, i) => `${i}-${pos}`;
+    return checkTrioMarks({ arr, icon }, mapFunc);
+  };
+
+  const checkDiagonalLeftEqual = function (icon) {
+    const arr = board.getDiagonalLeft();
+    const mapFunc = (_, i) => `${i}-${i}`;
+    return checkTrioMarks({ arr, icon }, mapFunc);
+  };
+
+  const checkDiagonalRightEqual = function (icon) {
+    const arr = board.getDiagonalRight();
+    const mapFunc = (_, i) => {
+      const col = arr.length - (i + 1);
+      return `${i}-${col}`;
+    };
+    return checkTrioMarks({ arr, icon }, mapFunc);
+  };
+
+  function checkHasWinningMarks(icon, pos) {
     return (
-      checkArrayEqual(diagonalLeft, icon) ||
-      checkArrayEqual(diagonalRight, icon)
+      checkRowEqual(icon, pos.row) ||
+      checkColEqual(icon, pos.col) ||
+      checkDiagonalLeftEqual(icon) ||
+      checkDiagonalRightEqual(icon)
     );
+  }
+
+  function getWinningMarks() {
+    return winningMarks;
+  }
+
+  function resetWinningMarks() {
+    winningMarks = null;
+  }
+
+  function setWinningMarksColor() {
+    winningMarks.forEach((pos) => {
+      const square = board.getSquareEl(pos);
+      square.classList.add('mark-win');
+    });
   }
 
   return {
@@ -139,9 +180,9 @@ const game = (() => {
     changePlayer,
     initialize,
     setText,
-    checkRowEqual,
-    checkColEqual,
-    checkDiagonalEqual,
+    checkHasWinningMarks,
+    getWinningMarks,
+    setWinningMarksColor,
   };
 })();
 
@@ -155,12 +196,13 @@ function Player(icon) {
   function mark(row, col) {
     if (board.getSquaresArr()[row][col] !== null || isWinner) return;
 
-    const squareEl = board.getSquareEl(row, col);
+    const squareEl = board.getSquareEl(`${row}-${col}`);
     squareEl.classList.add(`mark-${icon}`);
     board.getSquaresArr()[row][col] = icon;
 
-    if (checkDidWin(row, col)) {
+    if (game.checkHasWinningMarks(icon, { row, col })) {
       setWin();
+      game.setWinningMarksColor();
       return;
     }
 
@@ -170,14 +212,6 @@ function Player(icon) {
     }
 
     game.changePlayer();
-  }
-
-  function checkDidWin(row, col) {
-    return (
-      game.checkRowEqual(icon, row) ||
-      game.checkColEqual(icon, col) ||
-      game.checkDiagonalEqual(icon)
-    );
   }
 
   function setWin() {
