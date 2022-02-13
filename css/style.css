@@ -10,7 +10,10 @@
   --color-bg: var(--color-05);
   --color-txt: var(--color-01);
   --color-border: var(--color-04);
-  --color-primary: #fde68a;
+  --color-primary: #fde047;
+
+  --color-x: #f9a8d4;
+  --color-o: #67e8f9;
 
   --font-text: 'Roboto Mono', monospace;
   --font-marks: 'Fredoka One', Roboto, sans-serif;
@@ -104,4 +107,16 @@ button {
 
 .reset-game > span {
   font-size: 1.5rem;
+}
+
+.mark-x {
+  color: var(--color-x);
+}
+
+.mark-o {
+  color: var(--color-o);
+}
+
+.mark-win {
+  color: var(--color-primary);
 }

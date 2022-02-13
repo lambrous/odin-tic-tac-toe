@@ -15,6 +15,10 @@ const board = (() => {
     return squares;
   }
 
+  function getSquareEl(row, col) {
+    return document.querySelector(`[data-mark="${row}-${col}"]`);
+  }
+
   function initialize() {
     reset();
     container.innerHTML = '';
@@ -33,6 +37,7 @@ const board = (() => {
   function createTile(row, col) {
     const el = document.createElement('button');
     el.classList.add('square');
+    el.setAttribute('data-mark', `${row}-${col}`);
     el.addEventListener('click', () => {
       game.getCurrentPlayer().mark(row, col);
       el.textContent = squares[row][col];
@@ -64,6 +69,7 @@ const board = (() => {
     icons,
     reset,
     getSquaresArr,
+    getSquareEl,
     initialize,
     getCol,
     getRow,
@@ -148,6 +154,9 @@ function Player(icon) {
 
   function mark(row, col) {
     if (board.getSquaresArr()[row][col] !== null || isWinner) return;
+
+    const squareEl = board.getSquareEl(row, col);
+    squareEl.classList.add(`mark-${icon}`);
     board.getSquaresArr()[row][col] = icon;
 
     if (checkDidWin(row, col)) {
