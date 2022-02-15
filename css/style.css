@@ -7,14 +7,16 @@
   --color-04: #475569;
   --color-05: #334155;
   --color-06: #1e293b;
+  --color-07: #0f172a;
 
   --color-bg: var(--color-06);
   --color-txt: var(--color-01);
   --color-border: var(--color-04);
   --color-p: #fde047;
+  --color-pl: #fef08a;
+  --color-pd: #facc15;
 
   --color-x: #f9a8d4;
-  --color-xd: #9d174d;
   --color-o: #67e8f9;
 
   --font-text: 'Roboto Mono', monospace;
@@ -33,6 +35,7 @@ body {
 button {
   cursor: pointer;
   user-select: none;
+  transition: background-color 200ms ease;
 }
 
 main {
@@ -84,7 +87,7 @@ main {
 }
 
 .bottom {
-  margin-top: 3rem;
+  margin-top: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -103,7 +106,7 @@ main {
 
 .player {
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,11 +114,21 @@ main {
   padding: 1em 2.5em;
   border-radius: 12px;
   user-select: none;
-  transition: background-color 250ms ease-out;
+  transition: all 250ms ease-out;
+  border: 3px solid var(--color-bg);
 }
 
-.player-turn {
-  background-color: var(--color-05);
+.player-name {
+  font-weight: 500;
+}
+
+.player-turn.player-x {
+  border-color: var(--color-x);
+  color: var(--color-x);
+}
+.player-turn.player-o {
+  border-color: var(--color-o);
+  color: var(--color-o);
 }
 
 .player-mark {
@@ -136,21 +149,40 @@ main {
   padding: 1rem 3rem;
   color: var(--color-06);
   border-radius: 12px;
+  transform: scale(1);
+  transition: transform 0.2s ease-out;
+
+  position: absolute;
 }
 
-.reset-game {
-  background-color: var(--color-border);
+.hidden {
+  /* display: none; */
+  transform: scale(0);
+  transition: none;
+}
+
+.buttons {
+  position: absolute;
+  left: 20%;
+  top: 44%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.btn {
+  background-color: var(--color-04);
   padding: 0.8em;
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  position: absolute;
-  left: 20%;
-  top: 50%;
 }
 
-.reset-game:hover {
+.btn:hover {
   background-color: var(--color-03);
 }
 
@@ -170,6 +202,97 @@ main {
   color: var(--color-p);
 }
 
-.hidden {
-  display: none;
+.home {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg);
+  padding: 3rem 2rem 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5rem;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--color-pd);
+}
+
+.home .inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10rem;
+}
+
+.player-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.player-input label {
+  font-size: 5rem;
+  font-family: var(--font-marks);
+  cursor: pointer;
+  user-select: none;
+}
+
+.player-input label[for='input-x'] {
+  color: var(--color-x);
+}
+
+.player-input label[for='input-o'] {
+  color: var(--color-o);
+}
+
+.player-input input {
+  background-color: var(--color-05);
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 1em 2em;
+  border-radius: 10px;
+}
+
+.player-input input::placeholder {
+  color: var(--color-02);
+}
+
+.player-input select {
+  background: var(--color-05);
+  width: 100%;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 1em;
+  border-radius: 10px;
+  color: var(--color-02);
+}
+
+.btn-play {
+  background-color: var(--color-p);
+  color: var(--color-bg);
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  padding: 0.5em 1.7em;
+  border-radius: 99em;
+  margin-top: 3rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.btn-play:hover,
+.btn-play:focus {
+  background-color: var(--color-pd);
+}
+
+.visible {
+  visibility: visible;
+  z-index: 99;
 }

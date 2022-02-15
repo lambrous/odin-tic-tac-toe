@@ -80,10 +80,28 @@ const board = (() => {
 })();
 
 const displayController = (() => {
+  const homeContainer = document.querySelector('.home');
+  const xNameInput = document.querySelector('#input-x');
+  const oNameInput = document.querySelector('#input-o');
   const playersContainer = document.querySelector('.players');
   const player1El = document.querySelector('.player-x');
   const player2El = document.querySelector('.player-o');
   const winnerEl = document.querySelector('.winner');
+
+  function showBoard() {
+    homeContainer.classList.remove('visible');
+  }
+
+  function hideBoard() {
+    homeContainer.classList.add('visible');
+  }
+
+  function getPlayerNames() {
+    const xName = xNameInput.value || 'Player 1';
+    const oName = oNameInput.value || 'Player 2';
+
+    return [xName, oName];
+  }
 
   function updatePlayerTurn(icon) {
     if (icon === board.icons[0]) {
@@ -114,6 +132,9 @@ const displayController = (() => {
   }
 
   return {
+    showBoard,
+    hideBoard,
+    getPlayerNames,
     updatePlayerTurn,
     updatePlayerName,
     showWinner,
@@ -122,13 +143,25 @@ const displayController = (() => {
 })();
 
 const game = (() => {
-  const player1 = Player(board.icons[0], 'Player 1');
-  const player2 = Player(board.icons[1], 'Player 2');
+  let player1 = Player(board.icons[0], 'Player 1');
+  let player2 = Player(board.icons[1], 'Player 2');
   let currentPlayer = player1;
   let winningMarks = null;
 
+  const playBtn = document.querySelector('.btn-play');
+  playBtn.addEventListener('click', start);
   const resetBtn = document.querySelector('.reset-game');
   resetBtn.addEventListener('click', initialize);
+  const backBtn = document.querySelector('.btn-back');
+  backBtn.addEventListener('click', displayController.hideBoard);
+
+  function start() {
+    const [xName, oName] = displayController.getPlayerNames();
+    player1 = Player(board.icons[0], xName);
+    player2 = Player(board.icons[1], oName);
+    displayController.showBoard();
+    initialize();
+  }
 
   function changePlayer(player = 0) {
     if (player === 1) currentPlayer = player1;
@@ -253,7 +286,7 @@ function Player(icon, name) {
   }
 
   function setWin() {
-    displayController.showWinner(`${name} '${icon}' wins`);
+    displayController.showWinner(`[${icon}] ${name} wins`);
     isWinner = true;
   }
 

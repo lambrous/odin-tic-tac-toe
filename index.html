@@ -14,6 +14,47 @@
     <script src="./index.js" defer></script>
   </head>
   <body>
+    <div class="home visible">
+      <h1 class="title">tic-tac-toe</h1>
+      <div class="inputs">
+        <div class="player-input">
+          <label for="input-x">X</label>
+          <input
+            minlength="1"
+            maxlength="12"
+            type="text"
+            name="xName"
+            id="input-x"
+            placeholder="Player 1"
+          />
+          <select name="playerTypeX" id="player-type">
+            <option value="human">Human</option>
+            <option disabled value="easyBot">Bot (easy)</option>
+            <option disabled value="mediumBot">Bot (medium)</option>
+            <option disabled value="hardBot">Bot (hard)</option>
+          </select>
+        </div>
+        <div class="player-input">
+          <label for="input-o">O</label>
+          <input
+            minlength="1"
+            maxlength="12"
+            type="text"
+            name="oName"
+            id="input-o"
+            placeholder="Player 2"
+          />
+          <select name="playerTypeX" id="player-type">
+            <option value="human">Human</option>
+            <option disabled value="easyBot">Bot (easy)</option>
+            <option disabled value="mediumBot">Bot (medium)</option>
+            <option disabled value="hardBot">Bot (hard)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-play">Play</button>
+    </div>
+
     <div class="container">
       <h1 class="title">tic-tac-toe</h1>
       <main class="board">
@@ -27,9 +68,14 @@
         <button data-key="7" class="square"></button>
         <button data-key="8" class="square"></button> -->
       </main>
-      <button class="reset-game">
-        <span class="material-icons"> restart_alt </span>
-      </button>
+      <div class="buttons">
+        <button class="btn btn-back">
+          <span class="material-icons"> arrow_back </span>
+        </button>
+        <button class="btn reset-game">
+          <span class="material-icons"> restart_alt </span>
+        </button>
+      </div>
       <div class="bottom">
         <p class="winner hidden">DRAW</p>
         <div class="players">
