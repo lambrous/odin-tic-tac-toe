@@ -119,10 +119,21 @@ const displayController = (() => {
     playerEl.textContent = name;
   }
 
-  function showWinner(text) {
+  function showWinner(name = null, mark = null) {
     playersContainer.classList.add('hidden');
     winnerEl.classList.remove('hidden');
-    winnerEl.textContent = text;
+    if (name !== null && mark !== null) {
+      winnerEl.innerHTML = `
+        <span class="winner-mark">${mark}</span>
+        <span>${name} Wins</span>
+        <span class="winner-mark">${mark}</span>
+      `;
+    } else
+      winnerEl.innerHTML = `
+        <span class="winner-mark">x</span>
+        DRAW
+        <span class="winner-mark">o</span>
+    `;
   }
 
   function reset() {
@@ -278,7 +289,7 @@ function Player(icon, name) {
     }
 
     if (board.checkBoardFill()) {
-      displayController.showWinner('draw');
+      displayController.showWinner();
       return;
     }
 
@@ -286,7 +297,7 @@ function Player(icon, name) {
   }
 
   function setWin() {
-    displayController.showWinner(`[${icon}] ${name} wins`);
+    displayController.showWinner(name, icon);
     isWinner = true;
   }
 
@@ -296,5 +307,3 @@ function Player(icon, name) {
 
   return { icon, name, mark, resetWin, getIsWinner };
 }
-
-game.initialize();
