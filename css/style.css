@@ -76,7 +76,8 @@ main {
   font-family: var(--font-marks);
   text-transform: uppercase;
   font-size: 3rem;
-  transition: color ease-in-out 250ms;
+  transition: color ease-out 250ms,
+    font-size cubic-bezier(0.175, 0.885, 0.32, 1.275) 350ms;
 }
 
 .square:nth-child(3n) {
@@ -146,7 +147,7 @@ main {
   background-color: var(--color-p);
   width: max-content;
   padding: 1rem 3rem;
-  color: var(--color-06);
+  color: var(--color-bg);
   border-radius: 12px;
   transform: scale(1);
   transition: transform 0.2s ease-out;
@@ -196,6 +197,11 @@ main {
   font-size: 1.5rem;
 }
 
+.mark-x,
+.mark-o {
+  font-size: 3.5rem;
+}
+
 .mark-x {
   color: var(--color-x);
 }
@@ -206,6 +212,7 @@ main {
 
 .mark-win {
   color: var(--color-p);
+  /* font-size: 3.5em; */
 }
 
 .home {
@@ -293,9 +300,13 @@ select:focus {
   letter-spacing: 0.1em;
 }
 
-.btn-play:hover,
-.btn-play:focus {
+.btn-play:hover {
   background-color: var(--color-pd);
+}
+
+.btn-play:focus {
+  outline-offset: 0.2em;
+  outline: 3px solid var(--color-pd);
 }
 
 .visible {
